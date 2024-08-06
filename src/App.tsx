@@ -2,23 +2,24 @@ import router from "./router";
 import { RouterProvider } from "react-router-dom";
 import GlobalContext from "./context";
 import { useState } from "react";
+import { Permission } from "@/component/PermissionWrapper";
+import Loading from "@/component/Loading";
 
-interface UserInfo {
+export interface UserInfo {
   userName: string;
   role: string;
 }
 
 function App() {
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    userName: "",
-    role: "NO_LOGIN",
+    userName: "admin",
+    role: Permission.NO_LOGIN,
   });
-
   return (
     <GlobalContext.Provider value={{ userInfo, setUserInfo }}>
       <RouterProvider
         router={router}
-        fallbackElement={"router loading..."}
+        fallbackElement={<Loading />}
       ></RouterProvider>
     </GlobalContext.Provider>
   );

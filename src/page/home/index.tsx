@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Globalhead from "@/component/globalhead";
 import { routes } from "@/router";
 import GlobalContext from "@/context";
+import { IconClose } from "@arco-design/web-react/icon";
 
 const Header = Layout.Header;
 const Footer = Layout.Footer;
@@ -11,15 +12,17 @@ const Content = Layout.Content;
 
 function Index() {
   const navigate = useNavigate();
-  const userInfo = useContext(GlobalContext);
+  const { userInfo, setUserInfo } = useContext(GlobalContext);
   return (
     <>
       <Layout className="h-screen">
-        <Header>
+        <Header className="shadow-sm">
           <Globalhead routes={routes} child={"home"}>
-            {userInfo.userInfo.role === "NO_LOGIN" ? (
+            {userInfo.role === "NO_LOGIN" ? (
               <Button
-                type="primary"
+                size={"mini"}
+                shape={"round"}
+                type="outline"
                 onClick={() => {
                   navigate("/login");
                 }}
@@ -28,15 +31,16 @@ function Index() {
               </Button>
             ) : (
               <>
-                <Avatar>{userInfo.userInfo.userName}</Avatar>
-                <Button
-                  type="default"
+                <Avatar
+                  triggerIcon={<IconClose />}
+                  triggerType="mask"
                   onClick={() => {
-                    userInfo.setUserInfo({ userName: "", role: "NO_LOGIN" });
+                    navigate("/login");
+                    setUserInfo({ userName: "", role: "NO_LOGIN" });
                   }}
                 >
-                  退出
-                </Button>
+                  {userInfo.userName}
+                </Avatar>
               </>
             )}
           </Globalhead>

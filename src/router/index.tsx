@@ -1,13 +1,20 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Home from "../page/home/index.tsx";
 import { RouteObject } from "react-router/dist/lib/context";
+import { Permission } from "@/component/PermissionWrapper";
+import ErrorPage from "@/page/home/ErrorPage";
 
 export type Route = RouteObject & {
   id?: string;
   title?: string;
   children?: Route[];
-  meta?: any;
+  meta?: RouteMeta;
 };
+
+interface RouteMeta {
+  showHeader?: boolean;
+  needPermission?: Permission;
+}
 
 export const routes: Route[] = [
   {
@@ -15,10 +22,13 @@ export const routes: Route[] = [
     title: "首页",
     path: "/",
     element: <Home />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
-        meta: { showHeader: false },
+        meta: {
+          showHeader: false,
+        },
         element: <Navigate to={"/welcome"} />,
       },
       {
@@ -40,6 +50,15 @@ export const routes: Route[] = [
         path: "/register",
         meta: { showHeader: false },
         lazy: () => import("../page/home/userregister"),
+      },
+      {
+        id: "userManage",
+        title: "用户管理",
+        path: "/userManage",
+        meta: {
+          needPermission: Permission.ADMIN,
+        },
+        lazy: () => import("../page/home/UserManage"),
       },
     ],
   },
