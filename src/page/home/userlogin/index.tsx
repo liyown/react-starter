@@ -1,35 +1,59 @@
-import { Button, Form, Input, InputNumber } from "@arco-design/web-react";
+import { Button, Form, Input } from "@arco-design/web-react";
+import Password from "@arco-design/web-react/es/Input/password";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import GlobalContext from "@/context";
 
 const FormItem = Form.Item;
 
 export function Component() {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const globalContext = useContext(GlobalContext);
   return (
     <Form
       form={form}
-      style={{ width: 1000 }}
-      initialValues={{ name: "admin" }}
+      style={{ width: 600 }}
+      className="mx-auto mt-32"
       autoComplete="off"
-      onValuesChange={(v, vs) => {
-        console.log(v, vs);
-      }}
       onSubmit={(v) => {
         console.log(v);
+        globalContext.setUserInfo(v);
+        navigate("/");
       }}
     >
-      <FormItem label="Username" field="name" rules={[{ required: true }]}>
-        <Input placeholder="please enter your username" />
+      <FormItem
+        label="用户名"
+        field="userName"
+        rules={[
+          { required: true },
+          { match: /^[a-zA-Z0-9]{6,}$/, message: "用户名必须是6位以上" },
+        ]}
+      >
+        <Input placeholder="输入用户名" />
       </FormItem>
       <FormItem
-        label="Age"
-        field="age"
-        rules={[{ required: true, type: "number", min: 0, max: 99 }]}
+        label="密码"
+        field="passWord"
+        rules={[
+          { required: true, type: "string" },
+          { match: /^[a-zA-Z0-9]{6,}$/, message: "密码必须是6位以上" },
+        ]}
       >
-        <InputNumber placeholder="please enter your age" />
+        <Password placeholder="输入密码" />
       </FormItem>
       <FormItem wrapperCol={{ offset: 5 }}>
-        <Button type="primary" htmlType="submit" style={{ marginRight: 24 }}>
-          Submit
+        <Button type="primary" htmlType="submit" style={{ marginRight: 4 }}>
+          登录
+        </Button>
+        <Button
+          htmlType="submit"
+          style={{ marginRight: 285 }}
+          onClick={() => {
+            navigate("/register");
+          }}
+        >
+          注册
         </Button>
         <Button
           style={{ marginRight: 24 }}
@@ -38,34 +62,6 @@ export function Component() {
           }}
         >
           Reset
-        </Button>
-        <Button
-          type="text"
-          onClick={() => {
-            form.setFieldsValue({
-              name: "admin",
-              age: 11,
-            });
-          }}
-        >
-          Fill Form
-        </Button>
-
-        <Button
-          type="text"
-          onClick={() => {
-            // 仅校验值，不会有 UI 表现
-            form
-              .validate({ validateOnly: true })
-              .then(() => {
-                console.log("pass");
-              })
-              .catch((e) => {
-                console.log(e.errors);
-              });
-          }}
-        >
-          validateOnly
         </Button>
       </FormItem>
     </Form>
